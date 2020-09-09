@@ -28,7 +28,7 @@
             <TextBlock Style="{StaticResource TitleBlock}">Vending Machine</TextBlock>
         </StackPanel>
 
-        <ListView Style="{StaticResource VendingList}" ItemsSource="{Binding Itemuri}" SelectedItem="{Binding SelectedProducts}" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="4" Margin="0,5,29,10">
+        <ListView Style="{StaticResource VendingList}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedProducts}" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="4" Margin="0,5,29,10">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
@@ -45,13 +45,13 @@
         </ListView>
 
 
-        <Button Style="{StaticResource Buttons}" Grid.Row="6" Click="Insert25_Clicked" Margin="5,5,45,5">
+        <Button Style="{StaticResource Buttons}" Grid.Row="6" Click="Insert50_Clicked" Margin="5,5,45,5">
             0.50 Bani
         </Button>
-        <Button Style="{StaticResource Buttons}" Grid.Row="6" Click="Insert50_Clicked" Grid.ColumnSpan="2" Margin="93,5,28,5">
+        <Button Style="{StaticResource Buttons}" Grid.Row="6" Click="Insert1_Clicked" Grid.ColumnSpan="2" Margin="93,5,28,5">
             1 Leu
         </Button>
-        <Button Style="{StaticResource Buttons}" Grid.Row="6" Grid.Column="1" Click="Insert75_Clicked" Grid.ColumnSpan="2" Margin="60,5,29,5">
+        <Button Style="{StaticResource Buttons}" Grid.Row="6" Grid.Column="1" Click="Insert5_Clicked" Grid.ColumnSpan="2" Margin="60,5,29,5">
             5 Lei
         </Button>
 
@@ -64,21 +64,21 @@
         </Button>
 
         <StackPanel Grid.Row="5" Grid.Column="0" Background="White" Margin="4,0,44,60">
-            <TextBlock  Style="{StaticResource CustomerLabel}" Text="{Binding Pays.Inserted,  StringFormat= Lei {0:0.00} }" Height="24" HorizontalAlignment="Left"/>
+            <TextBlock  Style="{StaticResource CustomerLabel}" Text="{Binding Pay.Inserted,  StringFormat= Lei {0:0.00} }" Height="24" HorizontalAlignment="Left"/>
 
         </StackPanel>
 
-        <StackPanel Grid.Row="5" Grid.Column="1" Background="White" Margin="0,0,73,60" Grid.ColumnSpan="2" RenderTransformOrigin="0.495,1.75">
-            <TextBlock Style="{StaticResource CustomerLabel}" Text="{Binding CalculateChange,  StringFormat= Lei {0:0.00} }" Height="24" HorizontalAlignment="Left"  />
+        <StackPanel Grid.Row="5" Grid.Column="1" Background="White" Margin="0,0,76,60" Grid.ColumnSpan="2" RenderTransformOrigin="0.495,1.75">
+            <TextBlock Style="{StaticResource CustomerLabel}" Text="{Binding CalculateChange,  StringFormat= Change{0:0.00} }" Height="24" HorizontalAlignment="Left"  />
 
         </StackPanel>
         <DockPanel Margin="5,5,1,57" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Grid.RowSpan="4" Background="BlanchedAlmond">
-            <TextBlock DockPanel.Dock="Bottom" Style="{StaticResource CustomerLabel}" Text="{Binding Totals, StringFormat=Lei {0:0.00} }" Height="43" RenderTransformOrigin="0.5,0.5">
+            <TextBlock DockPanel.Dock="Bottom" Style="{StaticResource CustomerLabel}" Text="{Binding Total, StringFormat=Lei {0:0.00} }" Height="43" RenderTransformOrigin="0.5,0.5">
 
             </TextBlock>
             <TextBlock DockPanel.Dock="Top" FontSize="28" Style="{StaticResource CustomerLabel}" HorizontalAlignment="Center">Inventory</TextBlock>
 
-            <ListView ItemsSource="{Binding Baskets}" SelectedItem="{Binding SelectedProducts}" Margin="0,0,0,-2" Width="188">
+            <ListView ItemsSource="{Binding Basket}" SelectedItem="{Binding SelectedProducts}" Margin="0,0,0,-2" Width="188">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Style="{StaticResource CustomerLabel}" Text="{Binding DisplayProductProp}"/>

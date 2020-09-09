@@ -17,36 +17,35 @@ namespace VendingMachineTutorial.ViewModels
     public class MachineViewModel : Screen
     {
 
-        IProductService productServices = new ProductService();
-        IProductRepository repo = new ProductRepository();
-       
-        public PaymentViewModel Pays { get; private set; }
+        private IProductService productServices = new ProductService();
+        private IProductRepository repo = new ProductRepository();
+        private BindingList<Product> _items;
+        private BindingList<ShoppingBasketItem> _basket = new BindingList<ShoppingBasketItem>();
+
+        public PaymentViewModel Pay { get; private set; }
 
         public MachineViewModel()
         {
-            Pays = new PaymentViewModel();
+            Pay = new PaymentViewModel();
 
-            var items = productServices.GetProductList();
-            Itemuri = new BindingList<Product>(items);
+            LoadProducts();
 
         }
-
-        private BindingList<Product> _itemuri;
-
-        public BindingList<Product> Itemuri
+        
+        public BindingList<Product> Items
         {
-            get { return _itemuri; }
+            get { return _items; }
             set
             {
-                _itemuri = value;
-                NotifyOfPropertyChange(() => Itemuri);
+                _items = value;
+                NotifyOfPropertyChange(() => Items);
             }
         }
 
         private void LoadProducts()
         {
             var items = productServices.GetProductList();
-            Itemuri = new BindingList<Product>(items);
+            Items = new BindingList<Product>(items);
         }
 
         private Product _selectedProducts;
@@ -59,87 +58,62 @@ namespace VendingMachineTutorial.ViewModels
             {
                 _selectedProducts = value;
                 NotifyOfPropertyChange(() => SelectedProducts);
-                NotifyOfPropertyChange(() => IsItemInStocks);
+                NotifyOfPropertyChange(() => IsItemInStock);
             }
         }
 
-        private Product _itemToDecrement;
-
-        public Product itemToDecrement
+        public BindingList<ShoppingBasketItem> Basket
         {
-            get { return _itemToDecrement; }
-
+            get { return _basket; }
             set
             {
-                _itemToDecrement = value;
-                NotifyOfPropertyChange(() => itemToDecrement);
-             //   NotifyOfPropertyChange(() => IsItemInStocks);
-            }
-
-        }
-        
-
-        private int _itemQuantit=0;
-
-        public int ItemQuantity
-        {
-            get { return _itemQuantit; }
-            set
-            {
-                _itemQuantit = value;
-                NotifyOfPropertyChange(() => ItemQuantity);
-            }
-        }
-
-
-        private BindingList<ShoppingBasketItem> _baskets = new BindingList<ShoppingBasketItem>();
-
-        public BindingList<ShoppingBasketItem> Baskets
-        {
-            get { return _baskets; }
-            set
-            {
-                _baskets = value;
-                NotifyOfPropertyChange(() => Baskets);
+                _basket = value;
+                NotifyOfPropertyChange(() => Basket);
             }
         }
 
         public void AddToBasket()
         {
-            
-            ShoppingBasketItem existingItem = Baskets.FirstOrDefault(x => x.Product == SelectedProducts);
+            if (IsItemInStock)
+            {
+                ShoppingBasketItem existingItem = Basket.FirstOrDefault(x => x.Product == SelectedProducts);
 
-            if (existingItem != null)
-            {
-                existingItem.Quantity++;
-                
-            }
-            else
-            {
-                ShoppingBasketItem item = new ShoppingBasketItem
+                if (existingItem != null)
                 {
-                    Product = SelectedProducts,
-                    Quantity = 1
-                    
-                };
-                
-                Baskets.Add(item);
+                    existingItem.Quantity++;
 
+                }
+                else
+                {
+                    ShoppingBasketItem item = new ShoppingBasketItem
+                    {
+                        Product = SelectedProducts,
+                        Quantity = 1
+
+                    };
+
+                    Basket.Add(item);
+
+                }
+
+                SelectedProducts.ItemsLeft--;
+
+                if (Pay.Inserted >= Total)
+                {
+
+                    repo.UpdateQuantity(SelectedProducts);
+                }
             }
-
-            SelectedProducts.ItemsLeft--;
-
-            repo.UpdateQuantity(SelectedProducts);
-            NotifyOfPropertyChange(() => CalculateChange);
-            NotifyOfPropertyChange(() => Totals);
-            NotifyOfPropertyChange(() => Baskets);
             
+            NotifyOfPropertyChange(() => CalculateChange);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => Basket);
             
         }
 
         public void RemoveFromBasket()
         {
-            ShoppingBasketItem existingItem = Baskets.FirstOrDefault(x => x.Product == SelectedProducts);
+            ShoppingBasketItem existingItem = Basket.FirstOrDefault(x => x.Product == SelectedProducts);
 
 
             if (existingItem != null)
@@ -148,7 +122,7 @@ namespace VendingMachineTutorial.ViewModels
                 {
                     SelectedProducts.ItemsLeft++;
                     repo.UpdateQuantity(SelectedProducts);
-                    Baskets.Remove(existingItem);
+                    Basket.Remove(existingItem);
 
                 }
                 else if (existingItem.Quantity > 1)
@@ -159,24 +133,21 @@ namespace VendingMachineTutorial.ViewModels
                     repo.UpdateQuantity(SelectedProducts);
 
                 }
-
             }
-            
-
-            NotifyOfPropertyChange(() => Totals);
-            NotifyOfPropertyChange(() => Baskets);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => Basket);
             NotifyOfPropertyChange(() => CalculateChange);
         }
 
         
 
-        public double Totals
+        public double Total
         {
             get
             {
                 double total = 0;
 
-                foreach (var items in Baskets)
+                foreach (var items in Basket)
                 {
                     total += (items.Product.Price * items.Quantity);
                 }
@@ -189,25 +160,27 @@ namespace VendingMachineTutorial.ViewModels
         {
             get
             {
-                return Pays.Inserted - Totals;
+                return Pay.Inserted - Total;
             }
             set
             {
+                NotifyOfPropertyChange(() => Basket);
+                NotifyOfPropertyChange(() => Total);
+                
                 NotifyOfPropertyChange(() => CalculateChange);
-                NotifyOfPropertyChange(() => Totals);
-                NotifyOfPropertyChange(() => Baskets);
+                
             }
         }
 
 
-        public bool IsItemInStocks
+        private bool IsItemInStock
         {
             get
             {
 
                 bool output = false;
 
-                if (SelectedProducts?.ItemsLeft >= 0)
+                if (SelectedProducts.ItemsLeft > 0)
                 {
 
                     output = true;
@@ -216,11 +189,20 @@ namespace VendingMachineTutorial.ViewModels
                 return output;
             }
         }
-
-
+        
         public void InsertChange(double value)
         {
-            Pays.Insert(value);
+            Pay.Insert(value);
+            
+            if (Pay.Inserted >= Total)
+            {
+                
+                repo.UpdateQuantity(SelectedProducts);
+            }
+
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => Basket);
+            NotifyOfPropertyChange(() => CalculateChange);
         }
     }
 }

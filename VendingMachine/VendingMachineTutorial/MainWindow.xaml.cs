@@ -31,17 +31,17 @@ namespace VendingMachineTutorial
 
 
 
-        private void Insert25_Clicked(object sender, RoutedEventArgs e)
+        private void Insert50_Clicked(object sender, RoutedEventArgs e)
         {
             _machine.InsertChange(0.50);
         }
 
-        private void Insert50_Clicked(object sender, RoutedEventArgs e)
+        private void Insert1_Clicked(object sender, RoutedEventArgs e)
         {
             _machine.InsertChange(1);
         }
 
-        private void Insert75_Clicked(object sender, RoutedEventArgs e)
+        private void Insert5_Clicked(object sender, RoutedEventArgs e)
         {
             _machine.InsertChange(5);
         }

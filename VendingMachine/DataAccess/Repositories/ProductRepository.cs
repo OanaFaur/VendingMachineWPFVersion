@@ -21,8 +21,10 @@ namespace DataAccess.Repositories
 
         public void UpdateQuantity(Product p)
         {
-            context.Entry(p).State = System.Data.Entity.EntityState.Modified;
-            context.SaveChanges();
+            
+                context.Entry(p).State = System.Data.Entity.EntityState.Modified;
+                context.SaveChanges();
+            
         }
     }
 }
