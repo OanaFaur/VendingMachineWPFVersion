@@ -57,5 +57,10 @@ namespace VendingMachineTutorial
             _machine.RemoveFromBasket();
         }
 
+        private void GetYourChange(object sender, RoutedEventArgs e)
+        {
+            _machine.RetrieveChange();
+        }
+
     }
 }

@@ -59,6 +59,10 @@
             Add to Cart
         </Button>
 
+        <Button Style="{StaticResource Buttons}" DataContext="{Binding}" Grid.Row="6" Grid.Column="3"  Click="GetYourChange" Margin="5,1,5,8">
+            Get change
+        </Button>
+        
         <Button Style="{StaticResource Buttons}" DataContext="{Binding}" Grid.Row="5" Grid.Column="4"  Click="RemoveFromCart" Margin="5,1,5,7">
             Remove
         </Button>
@@ -68,7 +72,7 @@
 
         </StackPanel>
 
-        <StackPanel Grid.Row="5" Grid.Column="1" Background="White" Margin="0,0,76,60" Grid.ColumnSpan="2" RenderTransformOrigin="0.495,1.75">
+        <StackPanel Grid.Row="5" Grid.Column="1" Background="White" Margin="0,0,63,60" Grid.ColumnSpan="2" RenderTransformOrigin="0.495,1.75">
             <TextBlock Style="{StaticResource CustomerLabel}" Text="{Binding CalculateChange,  StringFormat= Change{0:0.00} }" Height="24" HorizontalAlignment="Left"  />
 
         </StackPanel>
@@ -78,7 +82,7 @@
             </TextBlock>
             <TextBlock DockPanel.Dock="Top" FontSize="28" Style="{StaticResource CustomerLabel}" HorizontalAlignment="Center">Inventory</TextBlock>
 
-            <ListView ItemsSource="{Binding Basket}" SelectedItem="{Binding SelectedProducts}" Margin="0,0,0,-2" Width="188">
+            <ListView ItemsSource="{Binding Basket}" Margin="0,0,0,-2" Width="188">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Style="{StaticResource CustomerLabel}" Text="{Binding DisplayProductProp}"/>

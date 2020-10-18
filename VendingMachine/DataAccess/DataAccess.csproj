@@ -55,11 +55,14 @@
       <DependentUpon>202009061305075_ProductMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Moneys.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ShoppingBasketItem.cs" />
     <Compile Include="Models\VendingMachineContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IMoneyRepository.cs" />
     <Compile Include="Repositories\IProductRepository.cs" />
+    <Compile Include="Repositories\MoneyRepository.cs" />
     <Compile Include="Repositories\ProductRepository.cs" />
   </ItemGroup>
   <ItemGroup>

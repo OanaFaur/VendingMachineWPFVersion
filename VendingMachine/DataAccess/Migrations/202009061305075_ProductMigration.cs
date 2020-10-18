@@ -19,12 +19,29 @@ namespace DataAccess.Migrations
                         Image = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
+
+            CreateTable(
+                "dbo.Money",
+                c => new
+                {
+                    Id = c.Int(nullable: false, identity: true),
+                    MoneyType=c.String(),
+                    MoneyQuantity = c.Int(nullable: false),
+
+
+
+                }
+
+                );
             
         }
+
+
         
         public override void Down()
         {
             DropTable("dbo.Products");
+            DropTable("dbo.Money");
         }
     }
 }
