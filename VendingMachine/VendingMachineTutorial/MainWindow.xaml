@@ -68,7 +68,7 @@
         </Button>
 
         <StackPanel Grid.Row="5" Grid.Column="0" Background="White" Margin="4,0,44,60">
-            <TextBlock  Style="{StaticResource CustomerLabel}" Text="{Binding Pay.Inserted,  StringFormat= Lei {0:0.00} }" Height="24" HorizontalAlignment="Left"/>
+            <TextBlock  Style="{StaticResource CustomerLabel}" Text="{Binding Pay.Inserted,  StringFormat= Leis {0:0.00} }" Height="24" HorizontalAlignment="Left"/>
 
         </StackPanel>
 

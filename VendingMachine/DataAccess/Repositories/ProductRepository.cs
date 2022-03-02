@@ -1,9 +1,6 @@
 ﻿using DataAccess.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
@@ -21,10 +18,8 @@ namespace DataAccess.Repositories
 
         public void UpdateQuantity(Product p)
         {
-            
-                context.Entry(p).State = System.Data.Entity.EntityState.Modified;
-                context.SaveChanges();
-            
+            context.Entry(p).State = System.Data.Entity.EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

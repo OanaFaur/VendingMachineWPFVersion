@@ -3,12 +3,8 @@ using Caliburn.Micro;
 using DataAccess.Models;
 using DataAccess.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace VendingMachineTutorial.ViewModels
@@ -29,10 +25,8 @@ namespace VendingMachineTutorial.ViewModels
         public MachineViewModel()
         {
             Pay = new PaymentViewModel();
-
             LoadProducts();
             LoadMoney();
-
         }
 
 
@@ -104,7 +98,6 @@ namespace VendingMachineTutorial.ViewModels
                 if (existingItem != null)
                 {
                     existingItem.Quantity++;
-
                 }
                 else
                 {
@@ -117,6 +110,7 @@ namespace VendingMachineTutorial.ViewModels
 
                     Basket.Add(item);
 
+                    repo.UpdateQuantity(SelectedProducts);
                 }
 
                 SelectedProducts.ItemsLeft--;
@@ -145,27 +139,31 @@ namespace VendingMachineTutorial.ViewModels
 
             double change = CalculateChange;
 
-            for (int i = MoneyList.Count - 1; i >= 0; i--)
+            if (CalculateChange > 0)
             {
-                
-                count = (int)(change / MoneyList[i].MoneyType);
-
-                if (count != 0)
+                for (int i = MoneyList.Count - 1; i >= 0; i--)
                 {
-                    MoneyList[i].MoneyQuantity -= (int)count;
-                    moneyRepo.UpdateMoneyQuantity(MoneyList[i]);
 
-                    Console.WriteLine("Count of {0} cent(s) :{1}", MoneyList[i].MoneyType, count);
+                    count = (int)(change / MoneyList[i].MoneyType);
 
-                    change %= (int)(MoneyList[i].MoneyType);
+                    if (count != 0)
+                    {
+                        MoneyList[i].MoneyQuantity -= (int)count;
+                        moneyRepo.UpdateMoneyQuantity(MoneyList[i]);
+
+                        Console.WriteLine("Count of {0} cent(s) :{1}", MoneyList[i].MoneyType, count);
+
+                        change %= (int)MoneyList[i].MoneyType;
+                    }
                 }
             }
+            Basket.Clear();
 
-            NotifyOfPropertyChange(() => Total);
-            NotifyOfPropertyChange(() => Basket);
+            Pay.Inserted = 0;
+
             NotifyOfPropertyChange(() => CalculateChange);
+            NotifyOfPropertyChange(() => Total);
         }
-
 
         public void RemoveFromBasket()
         {
@@ -195,8 +193,6 @@ namespace VendingMachineTutorial.ViewModels
             NotifyOfPropertyChange(() => CalculateChange);
         }
 
-
-
         public double Total
         {
             get
@@ -205,10 +201,13 @@ namespace VendingMachineTutorial.ViewModels
 
                 foreach (var items in Basket)
                 {
-                    total += (items.Product.Price * items.Quantity);
+                    total += items.Product.Price * items.Quantity;
                 }
-
                 return total;
+            }
+            set
+            {
+                NotifyOfPropertyChange(() => Total);
             }
         }
 
@@ -216,15 +215,20 @@ namespace VendingMachineTutorial.ViewModels
         {
             get
             {
-                return Pay.Inserted - Total;
+                if (Pay.Inserted > 0)
+                {
+
+                    return Pay.Inserted - Total;
+                }
+                else
+                {
+                    return 0;
+                }
+
             }
             set
             {
-                NotifyOfPropertyChange(() => Basket);
-                NotifyOfPropertyChange(() => Total);
-
                 NotifyOfPropertyChange(() => CalculateChange);
-
             }
         }
 
